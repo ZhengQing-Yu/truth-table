@@ -35,13 +35,13 @@ class TTable:
     def print_latex(self):
         # begin
         print("\\begin{center}")
-        print("\\begin{tabular}[", end='')
+        print("\\begin{tabular}{", end='')
         for variable in self.variables:
             print('c', end='')
         print('|', end='')
         for formula in self.formula:
             print('c', end='')
-        print(']')
+        print('}')
         # first row
         first_different = 0
         for variable in self.variables:
