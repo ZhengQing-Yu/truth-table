@@ -18,6 +18,14 @@ class Infix:
 
 iff = Infix(lambda x,y: x == y)
 implies = Infix(lambda x,y: not x or y)
+xor = Infix(lambda x,y: x == y)
+
+
+def program_help():
+    print("Function latex_print takes up to 2 optional arguments")
+    print("Without argument, it defaults to 10 for true/false values")
+    print("With one argument, it expects a string of two characters to represent true/false values")
+    print("With 2 arguments, the first/second arguments represent the true/false values")
 
 
 class TTable:
@@ -32,16 +40,25 @@ class TTable:
         self.tvalues = map(lambda x: ('{:0' + str(len(self.variables)) + '}').format(int(x)), self.tvalues)
         self.tvalues = map(lambda x: map(lambda y: int(y), x), self.tvalues)
 
-    def print_latex(self):
+    def print_latex(self, *optional):
+        if len(optional) == 0:
+            output = lambda x: int(x)
+        elif len(optional) == 2:
+            output = lambda x: optional[0] if x else optional[2]
+        elif len(optional) == 1:
+            output = lambda x: optional[0][0] if x else optional[0][1]
+        else:
+            program_help()
+
         # begin
         print("\\begin{center}")
-        print("\\begin{tabular}[", end='')
+        print("\\begin{tabular}{", end='')
         for variable in self.variables:
             print('c', end='')
         print('|', end='')
         for formula in self.formula:
             print('c', end='')
-        print(']')
+        print('}')
         # first row
         first_different = 0
         for variable in self.variables:
@@ -52,7 +69,7 @@ class TTable:
                 print('&', variable, end=' ')
         for formula in self.formula:
             split = re.findall(r"[\w']+|[(, 2)]", formula)
-            print('&', end='')
+            print(' &', end=' ')
             for expression in split:
                 if expression == "not":
                     print("$\\neg$", end=' ')
@@ -64,8 +81,10 @@ class TTable:
                     print(" $\\rightarrow$", end=' ')
                 elif expression == "iff":
                     print(" $\\leftrightarrow$", end=' ')
+                elif expression == "xor":
+                    print(" $\\oplus")
                 else:
-                    print(expression, end=' ')
+                    print(''.join(expression.split()), end='')
         print('\\\\\\hline')
         # table values
         for truth_valuation in self.tvalues:
@@ -75,17 +94,18 @@ class TTable:
             for n, value in enumerate(truth_valuation):
                 locals()[self.variables[n]] = value
                 if first_different == 0:
-                    print(value, end=' ')
+                    print(output(bool(value)), end=' ')
                     first_different = 1
                 else:
-                    print('&', value, end=' ')
+                    print('&', output(bool(value)), end=' ')
             for formula in self.formula:
-                print('&', int(eval(formula.replace("iff", "|iff|").replace("implies", "|implies|"))), end=' ')
+                    print('&', output(eval(formula.replace("iff", "|iff|").replace("implies", "|implies|").replace("xor", "|xor|"))), end=' ')
             print('\\\\')
         # end
         print("\\end{tabular}")
         print("\\end{center}")
 
 
-test = TTable(['a', 'b', 'c'], ["(a and b)", "(a implies c)"])
-test.print_latex()
+test = TTable(['p', 'q', 'r'],
+              ["((not q) and (not p))", "(p implies ((not q) and (not p)))", "((p implies ((not q) and (not p))) and (p or r))"])
+test.print_latex('tf')
