@@ -1,6 +1,4 @@
 import re
-true = True
-false = False
 
 class Infix:
     def __init__(self, function):
@@ -44,7 +42,7 @@ class TTable:
         if len(optional) == 0:
             output = lambda x: int(x)
         elif len(optional) == 2:
-            output = lambda x: optional[0] if x else optional[2]
+            output = lambda x: optional[0] if x else optional[1]
         elif len(optional) == 1:
             output = lambda x: optional[0][0] if x else optional[0][1]
         else:
@@ -106,6 +104,6 @@ class TTable:
         print("\\end{center}")
 
 
-test = TTable(['p', 'q', 'r'],
-              ["((not q) and (not p))", "(p implies ((not q) and (not p)))", "((p implies ((not q) and (not p))) and (p or r))"])
-test.print_latex('tf')
+test = TTable(['P', 'Q', 'R'],
+              ["(P implies Q)", "(Q implies R)", "(P iff R)"])
+test.print_latex("TF")
