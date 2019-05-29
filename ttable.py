@@ -106,4 +106,4 @@ class TTable:
 
 test = TTable(['P', 'Q', 'R'],
               ["(P implies Q)", "(Q implies R)", "(P iff R)"])
-test.print_latex("TF")
+test.print_latex("T","F")
