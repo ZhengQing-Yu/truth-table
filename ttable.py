@@ -16,7 +16,7 @@ class Infix:
 
 iff = Infix(lambda x,y: x == y)
 implies = Infix(lambda x,y: not x or y)
-xor = Infix(lambda x,y: x == y)
+xor = Infix(lambda x,y: x != y)
 
 
 def program_help():
